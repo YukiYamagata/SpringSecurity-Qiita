@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>UserPage</title>
+</head>
+<body>
+    <h1>User Page</h1>
+    <table border="1">
+        <tr>
+            <th>項目</th>
+            <th>内容</th>
+        </tr>
+        <tr>
+            <td>UserName</td>
+            <td><span sec:authentication="principal.username"></span></td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td><span sec:authentication="principal.name"></span></td>
+        </tr>
+        <tr>
+            <td>Role</td>
+            <td><span sec:authentication="principal.authorities"></span></td>
+        </tr>
+    </table>
+
+    <form method="get" th:action="@{/home}">
+        <input type="submit" value="Homeへ">
+    </form>
+    <form method="post" th:action="@{/logout}">
+        <input type="submit" value="ログアウト">
+    </form>
+</body>
+</html>

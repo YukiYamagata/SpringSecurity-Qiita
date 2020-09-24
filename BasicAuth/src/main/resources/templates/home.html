@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Home</h1>
+
+    <!-- ロールがADMINでログインしている場合、表示される -->
+    <div sec:authorize="hasRole('ADMIN')">
+        <form method="get" th:action="@{/adminPage}">
+            <input type="submit" value="AdminPageへ">
+        </form>
+    </div>
+
+    <!-- ロールがUSERでログインしている場合、表示される -->
+    <div sec:authorize="hasRole('USER')">
+        <form method="get" th:action="@{/userPage}">
+            <input type="submit" value="UserPageへ">
+        </form>
+    </div>
+
+    <!-- ログインしている場合、表示される -->
+    <div sec:authorize="isAuthenticated()">
+        <form method="post" th:action="@{/logout}">
+            <input type="submit" value="ログアウト">
+        </form>
+    </div>
+</body>
+</html>
