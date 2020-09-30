@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Access Denied</title>
+</head>
+<body>
+    <h1>アクセスが拒否されました</h1>
+
+    <form method="get" th:action="@{/home}">
+        <input type="submit" value="Homeへ">
+    </form>
+    <form method="post" th:action="@{/logout}">
+        <input type="submit" value="ログアウト">
+    </form>
+</body>
+</html>

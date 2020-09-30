@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>ログイン</title>
+</head>
+<body>
+    <h1>ログイン</h1>
+    <div th:if="${param.error}" > <!-- リクエストパラメータの判定 -->
+        <div>
+          UserNameまたは、Passwordが違います。 <!-- 認証エラーメッセージ -->
+        </div>
+    </div>
+
+    <form method="post" th:action="@{/authenticate}"> <!-- ログイン処理のパスを指定  -->
+        <label>UserName:</label>
+        <input type="text" id="userName" name="userName"> <!-- ユーザ名の入力部 -->
+        <br>
+        <label>Password:</label>
+        <input type="password" id="password" name="password"> <!-- パスワードの入力部 -->
+        <br>
+        <input type="submit" id="submit" value="ログイン">
+    </form>
+</body>
+</html>
