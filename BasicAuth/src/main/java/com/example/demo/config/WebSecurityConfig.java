@@ -15,7 +15,7 @@ import com.example.demo.service.AccountUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true) // メソッド認可処理を有効化
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -24,37 +24,39 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     PasswordEncoder passwordEncoder() {
         //BCryptアルゴリズムを使用してパスワードのハッシュ化を行う
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(); // BCryptアルゴリズムを使用
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        // AuthenticationManagerBuilderに、実装したUserDetailsServiceを設定する
+        auth.userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder()); // 作成したUserDetailsServiceを設定
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // 認可の設定
         http.exceptionHandling()
-                .accessDeniedPage("/accessDeniedPage")  //アクセス拒否された場合に遷移するURL
+                .accessDeniedPage("/accessDeniedPage")  // アクセス拒否された時に遷移するパス
             .and()
             .authorizeRequests()
-                .antMatchers("/loginForm").permitAll()  // loginFormは全ユーザーアクセス許可
-                .anyRequest().authenticated();          //それ以外は認証を求める
+                .antMatchers("/loginForm").permitAll()  // /loginFormは、全ユーザからのアクセスを許可
+                .anyRequest().authenticated();          // /loginForm以外は、認証を求める
 
         // ログイン設定
-        http.formLogin() //フォームログイン(フォーム認証)を行う
-                .loginPage("/loginForm")                //ログインURLを指定 ログインしていないかつ、認証が必要なページにアクセスしようとしたら、このControllerが呼ばれる
-                .loginProcessingUrl("/authenticate")    //login.htmlにおいて、<form>のactionと一致させる
-                .usernameParameter("userName")          //login.htmlにおいて、ユーザ名を入力する<input>のname要素と一致させる
-                .passwordParameter("password")          //login.htmlにおいて、パスワードを入力する<input>のname要素と一致させる
-                .defaultSuccessUrl("/home")             //ログイン成功したら、遷移するURL
-                .failureUrl("/loginForm?error=true");   //ログイン失敗したら、遷移するURL
+        http.formLogin()
+                .loginPage("/loginForm")                // ログインフォームを表示するパス
+                .loginProcessingUrl("/authenticate")    // フォーム認証処理のパス
+                .usernameParameter("userName")          // ユーザ名のリクエストパラメータ名
+                .passwordParameter("password")          // パスワードのリクエストパラメータ名
+                .defaultSuccessUrl("/home")             // 認証成功時に遷移するデフォルトのパス
+                .failureUrl("/loginForm?error=true");   // 認証失敗時に遷移するパス
 
         // ログアウト設定
         http.logout()
-                .logoutSuccessUrl("/loginForm").permitAll(); //ログアウトページには認証なしでアクセスできる
+                .logoutSuccessUrl("/loginForm")         // ログアウト成功時に遷移するパス
+                .permitAll();                           // 全ユーザに対してアクセスを許可
 
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // AuthenticationManagerBuilderに、実装したUserDetailsServiceを設定する
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 }
