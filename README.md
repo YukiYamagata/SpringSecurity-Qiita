@@ -7,6 +7,7 @@ Webシステムの認証・認可機能をSpring Securityを用いて実現す�
 
 # Details
 BasicAuthは簡単実装の認証・認可機能です。Qiita記事の3章を終えた時点のソースコードになっています。
+
 AdvancedAuthorizationは実業務向け実装の認可機能です。Qiita記事の4-1を終えた時点のソースコードになっています。
 
 - **簡単実装**とは
