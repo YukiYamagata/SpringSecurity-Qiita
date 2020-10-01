@@ -28,30 +28,36 @@ public class AuthFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String uri = request.getRequestURI();
 
-        HttpSession session = request.getSession(false); // --- (1) HttpSessionの取得
+        if(authUtil.isAuthorized("*", uri)) { // 全てのRoleにアクセス許可されているか判定
+        	filterChain.doFilter(request, response);
+        	return ;
+        }
+
+        HttpSession session = request.getSession(false); // HttpSessionの取得
 
         if (session != null) {
             SecurityContextImpl sci
-                = (SecurityContextImpl) session.getAttribute("SPRING_SECURITY_CONTEXT"); // --- (2) SecurityContextオブジェクトの取得
+                = (SecurityContextImpl) session.getAttribute("SPRING_SECURITY_CONTEXT"); // SecurityContextオブジェクトの取得
 
             if (sci != null) {
-                Authentication auth = sci.getAuthentication(); // --- (3) Authenticationオブジェクトの取得
+                Authentication auth = sci.getAuthentication(); // Authenticationオブジェクトの取得
 
                 if (auth != null) {
                     AccountUserDetails principal
-                        = (AccountUserDetails) auth.getPrincipal(); // --- (4) AccountUserDetailsの取得
+                        = (AccountUserDetails) auth.getPrincipal(); // AccountUserDetailsの取得
 
                     if (principal != null) {
-                        String roleName = principal.getUser().getRoleName(); // --- (5) ユーザのRoleの取得
+                        String roleName = principal.getUser().getRoleName(); // ユーザのRoleの取得
 
-                        if(!authUtil.isAuthorized(roleName, uri)) { // --- (6) アクセス許可されているか判定
-                            throw new AccessDeniedException("Unauthorized Access");
+                        if(authUtil.isAuthorized(roleName, uri)) { // 取得したRoleがアクセス許可されているか判定
+                        	filterChain.doFilter(request, response);
+                        	return ;
                         }
                     }
                 }
             }
         }
 
-        filterChain.doFilter(request, response);
+        throw new AccessDeniedException("Unauthorized Access");
     }
 }

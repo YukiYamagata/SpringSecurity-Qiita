@@ -22,13 +22,13 @@ public class FilterConfig {
     public FilterRegistrationBean<AuthFilter> authFilter() {
         // FilterをnewしてFilterRegistrationBeanのコンストラクタに渡す
         FilterRegistrationBean<AuthFilter> bean
-            = new FilterRegistrationBean<>(new AuthFilter(authUtil)); // --- (1) AuthFilterをBeanに登録
+            = new FilterRegistrationBean<>(new AuthFilter(authUtil)); // --- AuthFilterをBeanに登録
 
         // Filterのurl-patternを指定
-        bean.addUrlPatterns("/*"); // --- (2) すべての通信をAuthFilterに通過させる
+        bean.addUrlPatterns("/*"); // --- すべての通信をAuthFilterに通過させる
 
         // Filterの実行順序設定
-        bean.setOrder(-99); // --- (3) Spring SecurityのFilterの次に設定
+        bean.setOrder(-99); // --- Spring SecurityのFilterの次に設定
 
         return bean;
     }

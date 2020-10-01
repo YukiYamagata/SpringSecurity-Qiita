@@ -41,8 +41,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedPage("/accessDeniedPage")  // アクセス拒否された時に遷移するパス
             .and()
             .authorizeRequests()
-                .antMatchers("/loginForm").permitAll()  // /loginFormは、全ユーザからのアクセスを許可
-                .anyRequest().authenticated();          // /loginForm以外は、認証を求める
+                .antMatchers("/**").permitAll(); // すべてのアクセスを許可する
+                // .anyRequest().authenticated();   // /loginForm以外は、認証を求める
 
         // ログイン設定
         http.formLogin()
