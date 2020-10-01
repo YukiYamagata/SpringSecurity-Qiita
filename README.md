@@ -1,4 +1,4 @@
-# Spring Securityを用いた認証・認可機能 ～簡単実装から実業務向け実装まで～
+# 新人社員がSpring Securityで認証・認可機能を一から作ってみた
 
 Webシステムの認証・認可機能をSpring Securityを用いて実現するコードです。
 [Qiita記事](https://qiita.com/y-yamagata/private/8a33d9f75cf900863adb)のソースコードをまとめています。
