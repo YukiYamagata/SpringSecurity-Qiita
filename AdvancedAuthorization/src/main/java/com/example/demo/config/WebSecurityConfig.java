@@ -1,8 +1,12 @@
 package com.example.demo.config;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -10,6 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.FilterInvocation;
+import org.springframework.security.web.access.expression.WebExpressionVoter;
 
 import com.example.demo.service.AccountUserDetailsService;
 
@@ -21,11 +27,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     AccountUserDetailsService userDetailsService;
 
-    @Bean
+    @Autowired
+    AccessDecisionVoter<FilterInvocation> myVoter;
+
     PasswordEncoder passwordEncoder() {
         //BCryptアルゴリズムを使用してパスワードのハッシュ化を行う
         return new BCryptPasswordEncoder(); // BCryptアルゴリズムを使用
     }
+
+    public AccessDecisionManager createAccessDecisionManager() {
+      return new AffirmativeBased(Arrays.asList(new WebExpressionVoter(), myVoter));
+  }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -38,11 +50,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // 認可の設定
         http.exceptionHandling()
-                .accessDeniedPage("/accessDeniedPage")  // アクセス拒否された時に遷移するパス
-            .and()
-            .authorizeRequests()
-                .antMatchers("/**").permitAll(); // すべてのアクセスを許可する
-                // .anyRequest().authenticated();   // /loginForm以外は、認証を求める
+        		.accessDeniedPage("/accessDeniedPage")  // アクセス拒否された時に遷移するパス
+        	.and()
+        	.authorizeRequests()
+				.antMatchers("/**").authenticated()		// すべてのアクセスにおいて、認証を求める
+				.accessDecisionManager(createAccessDecisionManager()); // AccessDecisionManagerの指定
 
         // ログイン設定
         http.formLogin()
