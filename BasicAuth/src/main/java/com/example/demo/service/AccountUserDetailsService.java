@@ -27,9 +27,9 @@ public class AccountUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException(userName + "is not found");
         }
 
-        //User一件を取得 userNameが無ければ例外発生
+        // User一件を取得 userNameが無ければ例外発生
         try {
-            //Userを取得
+            // Userを取得
             MyUser myUser = userDao.findUserByUserName(userName);
 
             if (myUser != null) {
