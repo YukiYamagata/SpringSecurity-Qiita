@@ -1,7 +1,7 @@
 # 新人社員がSpring Securityで認証・認可機能を一から作ってみた
 
 Webシステムの認証・認可機能をSpring Securityを用いて実現するサンプルコードです。
-[Qiita記事](https://qiita.com/y-yamagata/private/8a33d9f75cf900863adb)のソースコードをまとめています。
+[Qiita記事](https://qiita.com/y-yamagata/items/7232b9969fcb7ce85b54)のソースコードをまとめています。
 
 
 
