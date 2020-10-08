@@ -15,7 +15,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.FilterInvocation;
-import org.springframework.security.web.access.expression.WebExpressionVoter;
 
 import com.example.demo.service.AccountUserDetailsService;
 
@@ -36,14 +35,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     public AccessDecisionManager createAccessDecisionManager() {
-      return new AffirmativeBased(Arrays.asList(new WebExpressionVoter(), myVoter));
-  }
+    	return new AffirmativeBased(Arrays.asList(myVoter)); // 認可処理はAffirmativeBased、投票処理はMyVoterを使用する。
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         // AuthenticationManagerBuilderに、実装したUserDetailsServiceを設定する
-        auth.userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder()); // 作成したUserDetailsServiceを設定
+        auth.userDetailsService(userDetailsService)     // 作成したUserDetailsServiceを設定
+                .passwordEncoder(passwordEncoder());    // パスワードのハッシュ化方法を指定(BCryptアルゴリズム)
     }
 
     @Override
@@ -53,11 +52,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         		.accessDeniedPage("/accessDeniedPage")  // アクセス拒否された時に遷移するパス
         	.and()
         	.authorizeRequests()
-				.antMatchers("/**").authenticated()		// すべてのアクセスにおいて、認証を求める
+        		.antMatchers("/**").access("isAuthenticated() and hasAuthority('USER')")
+//				.antMatchers("/**").authenticated()                    // すべてのアクセスにおいて、認証を求める
 				.accessDecisionManager(createAccessDecisionManager()); // AccessDecisionManagerの指定
 
         // ログイン設定
-        http.formLogin()
+        http.formLogin()                                // フォーム認証の有効化
                 .loginPage("/loginForm")                // ログインフォームを表示するパス
                 .loginProcessingUrl("/authenticate")    // フォーム認証処理のパス
                 .usernameParameter("userName")          // ユーザ名のリクエストパラメータ名

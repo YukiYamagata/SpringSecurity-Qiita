@@ -1,5 +1,5 @@
 package com.example.demo.service;
 
-public interface AuthUtil {
+public interface AuthorizationService {
 	boolean isAuthorized(String roleName, String uri);
 }

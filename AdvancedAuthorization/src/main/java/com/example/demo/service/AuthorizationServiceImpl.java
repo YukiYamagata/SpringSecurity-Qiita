@@ -9,15 +9,21 @@ import com.example.demo.entity.AccessAuthorization;
 import com.example.demo.repository.AccessAuthorizationDao;
 
 @Service
-public class AuthUtilImpl implements AuthUtil {
-
+public class AuthorizationServiceImpl implements AuthorizationService {
 	private final AccessAuthorizationDao authDao;
 
     @Autowired
-    public AuthUtilImpl(AccessAuthorizationDao authDao) {
+    public AuthorizationServiceImpl(AccessAuthorizationDao authDao) {
         this.authDao = authDao;
     }
 
+    /**
+     * 引数に渡された、RoleNameとURIの組み合わせがアクセス許可されているか判定する。
+     * @param roleName
+     * @param uri
+     * @return boolean
+     */
+    @Override
     public boolean isAuthorized(String roleName, String uri) { // アクセス許可されているか判定するメソッド
 
         if (StringUtils.isEmpty(roleName)) {

@@ -28,8 +28,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         // AuthenticationManagerBuilderに、実装したUserDetailsServiceを設定する
-        auth.userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder()); // 作成したUserDetailsServiceを設定
+        auth.userDetailsService(userDetailsService)     // 作成したUserDetailsServiceを設定
+                .passwordEncoder(passwordEncoder());    // パスワードのハッシュ化方法を指定(BCryptアルゴリズム)
     }
 
     @Override
@@ -43,7 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();          // /loginForm以外は、認証を求める
 
         // ログイン設定
-        http.formLogin()
+        http.formLogin()                                // フォーム認証の有効化
                 .loginPage("/loginForm")                // ログインフォームを表示するパス
                 .loginProcessingUrl("/authenticate")    // フォーム認証処理のパス
                 .usernameParameter("userName")          // ユーザ名のリクエストパラメータ名
