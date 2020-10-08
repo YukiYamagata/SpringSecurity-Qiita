@@ -10,7 +10,7 @@ import com.example.demo.repository.AccessAuthorizationDao;
 
 @Service
 public class AuthorizationServiceImpl implements AuthorizationService {
-	private final AccessAuthorizationDao authDao;
+    private final AccessAuthorizationDao authDao;
 
     @Autowired
     public AuthorizationServiceImpl(AccessAuthorizationDao authDao) {

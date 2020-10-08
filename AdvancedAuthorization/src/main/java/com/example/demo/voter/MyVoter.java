@@ -17,46 +17,46 @@ import com.example.demo.service.AuthorizationService;
 @Component
 public class MyVoter implements AccessDecisionVoter<FilterInvocation> {
 
-	private final AuthorizationService authorizationService;
+    private final AuthorizationService authorizationService;
 
-	@Autowired
-	public MyVoter(AuthorizationService authorizationService) {
-		this.authorizationService = authorizationService;
-	}
+    @Autowired
+    public MyVoter(AuthorizationService authorizationService) {
+        this.authorizationService = authorizationService;
+    }
 
-	@Override
-    public boolean supports(ConfigAttribute attribute) {	// 投票処理が必要か不要か判定するメソッド
+    @Override
+    public boolean supports(ConfigAttribute attribute) {    // 投票処理が必要か不要か判定するメソッド
         return true;
     }
 
     @Override
-    public boolean supports(Class<?> clazz) {				// 投票処理が必要か不要か判定するメソッド
-		return true;
+    public boolean supports(Class<?> clazz) {               // 投票処理が必要か不要か判定するメソッド
+        return true;
     }
 
     @Override
     public int vote(Authentication authentication, FilterInvocation filterInvocation,
-    		Collection<ConfigAttribute> attributes) { 		// アクセス権を付与するかどうか投票するメソッド
+            Collection<ConfigAttribute> attributes) {       // アクセス権を付与するかどうか投票するメソッド
 
-    	HttpServletRequest request = filterInvocation.getHttpRequest();	// HttpServletRequestの取得
-    	String uri = request.getRequestURI();							// リクエストからURIを取得
+        HttpServletRequest request = filterInvocation.getHttpRequest(); // HttpServletRequestの取得
+        String uri = request.getRequestURI();                           // リクエストからURIを取得
 
-    	if(authorizationService.isAuthorized("*", uri)) {	// --- (5) 全てのRoleにアクセス許可されているか判定
-        	return ACCESS_GRANTED;
+        if(authorizationService.isAuthorized("*", uri)) {   // 全てのRoleにアクセス許可されているか判定
+            return ACCESS_GRANTED;
         }
 
-		Object principal = authentication.getPrincipal();	// --- (6) ユーザの識別情報の取得
+        Object principal = authentication.getPrincipal();   // ユーザの識別情報の取得
 
-		if (!principal.getClass().equals(AccountUserDetails.class)) { // ---(7) 取得した識別情報がAccountUserDetailsかどうか判定
-			return ACCESS_DENIED;
-		}
-
-		String roleName = ((AccountUserDetails) principal).getUser().getRoleName(); // ---(8) ユーザのRoleの取得
-
-		if(authorizationService.isAuthorized(roleName, uri)) { // ---(9) 取得したRoleがアクセス許可されているか判定
-        	return ACCESS_GRANTED;
+        if (!principal.getClass().equals(AccountUserDetails.class)) { // 取得した識別情報がAccountUserDetailsかどうか判定
+            return ACCESS_DENIED;
         }
 
-    	return ACCESS_DENIED;
+        String roleName = ((AccountUserDetails) principal).getUser().getRoleName(); // ユーザのRoleの取得
+
+        if(authorizationService.isAuthorized(roleName, uri)) { // 取得したRoleがアクセス許可されているか判定
+            return ACCESS_GRANTED;
+        }
+
+        return ACCESS_DENIED;
     }
 }

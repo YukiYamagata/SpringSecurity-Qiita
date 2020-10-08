@@ -29,13 +29,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     AccessDecisionVoter<FilterInvocation> myVoter;
 
+    public AccessDecisionManager createAccessDecisionManager() {
+        return new AffirmativeBased(Arrays.asList(myVoter)); // 認可処理はAffirmativeBased、投票処理はMyVoterを使用する。
+    }
+
     PasswordEncoder passwordEncoder() {
         //BCryptアルゴリズムを使用してパスワードのハッシュ化を行う
         return new BCryptPasswordEncoder(); // BCryptアルゴリズムを使用
-    }
-
-    public AccessDecisionManager createAccessDecisionManager() {
-    	return new AffirmativeBased(Arrays.asList(myVoter)); // 認可処理はAffirmativeBased、投票処理はMyVoterを使用する。
     }
 
     @Override
@@ -49,12 +49,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // 認可の設定
         http.exceptionHandling()
-        		.accessDeniedPage("/accessDeniedPage")  // アクセス拒否された時に遷移するパス
-        	.and()
-        	.authorizeRequests()
-        		.antMatchers("/**").access("isAuthenticated() and hasAuthority('USER')")
-//				.antMatchers("/**").authenticated()                    // すべてのアクセスにおいて、認証を求める
-				.accessDecisionManager(createAccessDecisionManager()); // AccessDecisionManagerの指定
+                .accessDeniedPage("/accessDeniedPage")  // アクセス拒否された時に遷移するパス
+            .and()
+            .authorizeRequests()
+                .antMatchers("/**").authenticated()
+                    .accessDecisionManager(createAccessDecisionManager()); // すべてのアクセスにおいて、認可処理の適用
 
         // ログイン設定
         http.formLogin()                                // フォーム認証の有効化
@@ -69,6 +68,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.logout()
                 .logoutSuccessUrl("/loginForm")         // ログアウト成功時に遷移するパス
                 .permitAll();                           // 全ユーザに対してアクセスを許可
-
     }
 }
